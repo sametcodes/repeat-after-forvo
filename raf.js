@@ -1,5 +1,6 @@
-(function(){
-    console.log("forvo loaded")
+//(function(){
+
+    console.log('loaded')
     function createAudioElement(blobUrl) {
         const audioEl = document.createElement('audio');
         audioEl.id = "player-audio";
@@ -26,12 +27,11 @@
         }else{
             return new Promise((resolve) => {
                 setTimeout(() => resolve((() => {
-
                     playerContainer.dataset.status = "ready";
                     playerIcon.className = "fa fa-microphone";
                     playerIcon.style.color = "#000000";
                     document.querySelector("#player-audio").remove();
-                })()), 4000)
+                })()), 4500)
             })
         }
     }
@@ -49,26 +49,52 @@
                     changeStatus("play")
                 }
             };
-            recorder.start(1000);
+            recorder.onstart = e => {
+                playerLoader();
+            }
+            recorder.start(0)
             setTimeout(() => {
                 recorder.stop();
-            }, 4000);
+            }, 5000);
         }).catch(console.error);
     }
 
+    function playerLoader(α){
+        var seconds = 3;
+        var loader = document.getElementById('loader'), α = 0, π = Math.PI, t = (seconds/360 * 1000);
+        var draw_timeout;
+
+        if(α === 0){
+            clearTimeout(draw_timeout);
+        }
+
+        (function draw() {
+            α++;
+            α %= 360;
+            var r = ( α * π / 180 ), x = Math.sin( r ) * 125, y = Math.cos( r ) * - 125, mid = ( α > 180 ) ? 1 : 0, anim = 'M 0 0 v -125 A 125 125 1 ' + mid + ' 1 ' +  x  + ' ' +  y  + ' z';
+            loader.setAttribute( 'd', anim );
+            if(α < 359){
+                draw_timeout = setTimeout(draw, t);
+            }else{
+                draw();
+                clearTimeout(draw_timeout);
+            }
+        })();
+    }
     async function play(){
         var player = document.querySelector("#player-audio");
         if(player){
             player.play()
-            await changeStatus();
+            playerLoader();
+//            await changeStatus()
         }
     }
 
-    var a = document.createElement('link');
-    a.rel = "stylesheet";
-    a.type = "text/css";
-    a.href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
-    document.body.appendChild(a);
+    var fa = document.createElement("link");
+    fa.rel = "stylesheet";
+    fa.type = "text/css";
+    fa.href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
+    document.querySelector("body").appendChild(fa);
 
     let selfplayer = document.createElement("div");
     selfplayer.id = "ext-player";
@@ -80,11 +106,13 @@
     selfplayer.style.width = "50px";
     selfplayer.style.border = "3px solid #111";
     selfplayer.style.borderRadius = "100px";
-    selfplayer.insertAdjacentHTML("beforeend", '<i id="player-icon" style="line-height: 50px; width: 50px; text-align: center" class="fa fa-microphone"></i>')
+    selfplayer.insertAdjacentHTML("beforeend", `<div>
+        <div class="timer" style="position: absolute; left: 0px; top: 0px; z-index: -999;"><svg  fill="#0085ca" class="rotate" viewbox="0 0 250 250"> <path id="loader" transform="translate(125, 125)"/> </svg> </div>
+        <i id="player-icon" style="line-height: 50px; width: 50px; text-align: center" class="fa fa-microphone"></i>
+        </div>`);
     document.querySelector("body").appendChild(selfplayer);
 
     document.querySelector("#ext-player").onclick = function(){
-        console.log("yo")
         if(this.dataset.status === "ready"){
             record();
         }
@@ -92,5 +120,4 @@
             play();
         }
     }
-})()
-
+//})()
