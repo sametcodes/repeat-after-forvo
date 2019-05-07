@@ -24,15 +24,6 @@
             playerContainer.dataset.status = "play";
             playerIcon.className = "fa fa-play";
             playerIcon.style.color = "#000";
-        }else{
-            return new Promise((resolve) => {
-                setTimeout(() => resolve((() => {
-                    playerContainer.dataset.status = "ready";
-                    playerIcon.className = "fa fa-microphone";
-                    playerIcon.style.color = "#000000";
-                    document.querySelector("#player-audio").remove();
-                })()), 4500)
-            })
         }
     }
 
@@ -55,12 +46,12 @@
             recorder.start(0)
             setTimeout(() => {
                 recorder.stop();
-            }, 5000);
+            }, 3000);
         }).catch(console.error);
     }
 
     function playerLoader(α){
-        var seconds = 3;
+        var seconds = 2;
         var loader = document.getElementById('loader'), α = 0, π = Math.PI, t = (seconds/360 * 1000);
         var draw_timeout;
 
@@ -86,8 +77,16 @@
         if(player){
             player.play()
             playerLoader();
-//            await changeStatus()
         }
+    }
+    function reset(){
+        var playerContainer = document.querySelector("#ext-player");
+        var playerIcon = document.querySelector("#player-icon");
+
+        playerContainer.dataset.status = "ready";
+        playerIcon.className = "fa fa-microphone";
+        playerIcon.style.color = "#000000";
+        document.querySelector("#player-audio").remove();
     }
 
     var fa = document.createElement("link");
@@ -101,6 +100,7 @@
     selfplayer.dataset.status = "ready";
     selfplayer.style.position = "fixed";
     selfplayer.style.left = "20px";
+    selfplayer.style.cursor = "pointer";
     selfplayer.style.bottom = "20px";
     selfplayer.style.height = "50px";
     selfplayer.style.width = "50px";
@@ -108,11 +108,18 @@
     selfplayer.style.borderRadius = "100px";
     selfplayer.insertAdjacentHTML("beforeend", `<div>
         <div class="timer" style="position: absolute; left: 0px; top: 0px; z-index: -999;"><svg  fill="#0085ca" class="rotate" viewbox="0 0 250 250"> <path id="loader" transform="translate(125, 125)"/> </svg> </div>
-        <i id="player-icon" style="line-height: 50px; width: 50px; text-align: center" class="fa fa-microphone"></i>
+            <i id="player-icon" style="line-height: 50px; width: 50px; text-align: center" class="fa fa-microphone"></i>
+            <div id="reset" style="position: absolute;right: -30px;bottom: -20px;border: 1px solid red;padding: 5px 9px;border-radius: 100%;color: #fff;background-color: red; cursor: pointer;">
+                <i id="reset-icon" class="fa fa-trash" style="font-size: 15px"></i>
+            </div>
         </div>`);
     document.querySelector("body").appendChild(selfplayer);
 
-    document.querySelector("#ext-player").onclick = function(){
+    document.querySelector("#ext-player").onclick = function(e){
+        if(["reset", "reset-icon"].includes(e.originalTarget.id)){
+            reset();
+            return;
+        }
         if(this.dataset.status === "ready"){
             record();
         }
