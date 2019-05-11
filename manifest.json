@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "Forvoself",
+  "name": "Repeat after Forvo",
   "version": "1.0",
-  "description": "Improve your pronounciation yourself in forvo",
+  "description": "Improve your pronunciation. Repeat after Forvo.",
   "icons": {
       "64": "icons/icon-64.png"
   },
   "content_scripts": [
     {
-      "matches": ["*://tr.forvo.com/word/*"],
+      "matches": ["*://forvo.com/word/*", "*://*.forvo.com/word/*"],
       "js": ["raf.js"]
     }
   ]
