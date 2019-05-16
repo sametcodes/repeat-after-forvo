@@ -113,7 +113,7 @@ selfplayer.insertAdjacentHTML("beforeend", `<div>
 document.querySelector("body").appendChild(selfplayer);
 
 document.querySelector("#ext-player").onclick = function(e){
-    if(["reset", "reset-icon"].includes(e.originalTarget.id)){
+    if(["reset", "reset-icon"].includes(e.target.id)){
         reset();
         return;
     }
