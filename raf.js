@@ -25,6 +25,7 @@ function changeStatus(status){
 }
 
 function record(){
+  return new Promise((resolve, reject) => {
     changeStatus("recording");
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
         const chunks = [];
@@ -42,9 +43,11 @@ function record(){
         }
         recorder.start(0)
         setTimeout(() => {
-            recorder.stop();
+          recorder.stop();
+          resolve()
         }, 3000);
     }).catch(console.error);
+  })
 }
 
 function playerLoader(α){
@@ -77,6 +80,7 @@ async function play(){
     }
 }
 function reset(){
+  new Promise((resolve) => {
     var playerContainer = document.querySelector("#ext-player");
     var playerIcon = document.querySelector("#player-icon");
 
@@ -84,6 +88,8 @@ function reset(){
     playerIcon.className = "fa fa-microphone";
     playerIcon.style.color = "#000000";
     document.querySelector("#player-audio").remove();
+    resolve()
+  })
 }
 
 var fa = document.createElement("link");
@@ -124,3 +130,29 @@ document.querySelector("#ext-player").onclick = function(e){
         play();
     }
 }
+
+document.addEventListener("keypress", async function(e){
+  if(/[0-9]/g.exec(e.key)){
+    let key = Number(e.key);
+    if(key === 0) key = 10
+    let lang = window.location.hash.replace("#", "");
+    let container;
+    if(lang){
+      container = document.querySelectorAll(`#language-container-${lang} .show-all-pronunciations`)  
+    }else{
+      container = document.querySelector('.language-container .show-all-pronunciations')
+    }
+    let sounds = container.querySelectorAll(".play")
+    if(key <= sounds.length){
+      sounds[key-1].click();
+    }
+  }
+  if(e.key === "r"){
+    await reset();
+    await record();
+  }else if(e.key === "p"){
+    play();
+  }else if(e.key === "d"){
+    reset();
+  }
+});l
