@@ -138,7 +138,7 @@ document.addEventListener("keypress", async function(e){
     let lang = window.location.hash.replace("#", "");
     let container;
     if(lang){
-      container = document.querySelectorAll(`#language-container-${lang} .show-all-pronunciations`)  
+      container = document.querySelector(`#language-container-${lang} .show-all-pronunciations`)  
     }else{
       container = document.querySelector('.language-container .show-all-pronunciations')
     }
@@ -155,4 +155,4 @@ document.addEventListener("keypress", async function(e){
   }else if(e.key === "d"){
     reset();
   }
-});l
+});
